@@ -4,7 +4,7 @@ const winston       = require('winston');
 const Client = function client(config, customLogger) {
   const instanceConfig = (typeof config === 'object') ? config : {};
 
-  instanceConfig.baseUrl = instanceConfig.baseUrl || process.env.API_URL;
+  instanceConfig.baseUrl = instanceConfig.baseUrl || process.env.EOKO_API_URL;
 
   this.logger  = customLogger || winston.loggers.add('eoko-client-api');
   this.config  = instanceConfig;
@@ -57,9 +57,9 @@ Client.prototype.request = function buildRequest(method, path, body) {
     json: true,
   };
 
-  if (process.env.API_KEY) {
+  if (process.env.EOKO_API_KEY) {
     options.headers = {
-      apikey: process.env.API_KEY,
+      apikey: process.env.EOKO_API_KEY,
     };
   }
 
