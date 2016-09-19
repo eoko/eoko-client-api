@@ -8,6 +8,18 @@ const Client = function client(config, customLogger) {
 
   this.logger  = customLogger || winston.loggers.add('eoko-client-api');
   this.config  = instanceConfig;
+
+  if (!this.config.headers) {
+    this.config.headers = {};
+  }
+
+  if (process.env.EOKO_API_KEY) {
+    this.config.headers.apikey = instanceConfig.apiKey || process.env.EOKO_API_KEY;
+  }
+
+  if (process.env.EOKO_API_GROUPS) {
+    this.config.headers['x-consumer-groups'] = instanceConfig.groups || process.env.EOKO_API_GROUPS;
+  }
 };
 
 Client.prototype.get = function getRequest(path) {
@@ -55,13 +67,8 @@ Client.prototype.request = function buildRequest(method, path, body) {
     method,
     uri: this.config.baseUrl + path,
     json: true,
+    headers: this.config.headers,
   };
-
-  if (process.env.EOKO_API_KEY) {
-    options.headers = {
-      apikey: process.env.EOKO_API_KEY,
-    };
-  }
 
   if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
     options.body = body;
